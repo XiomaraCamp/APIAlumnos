@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XJJSC20230911.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +9,59 @@ namespace XJJSC20230911.Controllers
     [ApiController]
     public class AlumnosController : ControllerBase
     {
-        // GET: api/<AlumnosController>
+        static List<Alumno> alumnos = new List<Alumno>();
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Alumno> Get()
         {
-            return new string[] { "value1", "value2" };
+            return alumnos;
         }
 
-        // GET api/<AlumnosController>/5
+        
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Alumno Get(int id)
         {
-            return "value";
+            var alumno = alumnos.FirstOrDefault(c => c.Id == id);
+            return alumno;
         }
 
-        // POST api/<AlumnosController>
+        
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Alumno alumno)
         {
+            alumnos.Add(alumno);
+            return Ok();
         }
 
-        // PUT api/<AlumnosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Alumno alumno)
         {
+            var existingAlumno = alumnos.FirstOrDefault(c => c.Id == id);
+            if (existingAlumno != null)
+            {
+                existingAlumno.Name = alumno.Name;
+                existingAlumno.Nota = alumno.Nota;
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
-        // DELETE api/<AlumnosController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var existingAlumno = alumnos.FirstOrDefault(c => c.Id == id);
+            if (existingAlumno != null)
+            {
+                alumnos.Remove(existingAlumno);
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
